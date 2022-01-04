@@ -31,7 +31,7 @@ end
 def i(q)
   	identity = Matrix.identity(2)
   	@qbit[q] = identity * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = identity * @qbit[entanglement_check(q)]
 	end
 end
@@ -39,7 +39,7 @@ end
 def x(q)
   	paulix = Matrix[ [0, 1], [1, 0] ]
   	@qbit[q] = paulix * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = paulix * @qbit[entanglement_check(q)]
 	end
 end
@@ -47,7 +47,7 @@ end
 def y(q)
 	pauliy = Matrix[ [0, Complex(0, -1)], [Complex(0, 1), 0] ]
 	@qbit[q] = pauliy * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = pauliy * @qbit[entanglement_check(q)]
 	end
 end
@@ -55,7 +55,7 @@ end
 def z(q)
   	pauliz = Matrix[ [1, 0], [0, -1] ]
   	@qbit[q] = pauliz * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = pauliz * @qbit[entanglement_check(q)]
 	end
 end
@@ -63,7 +63,7 @@ end
 def h(q)
   	hadamard = Matrix[ [1, 1], [1, -1] ] / (Math.sqrt(2))
   	@qbit[q] = hadamard * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = hadamard * @qbit[entanglement_check(q)]
 	end
 end
@@ -71,7 +71,7 @@ end
 def s(q)
 	phase = Matrix[ [1, 0], [0, Complex(0, 1)] ]
 	@qbit[q] = phase * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = phase * @qbit[entanglement_check(q)]
 	end
 end
@@ -79,7 +79,7 @@ end
 def sd(q)
 	phasedagger = Matrix[ [1, 0], [0, Complex(0, -1)] ]
 	@qbit[q] = phasedagger * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = phasedagger * @qbit[entanglement_check(q)]
 	end
 end
@@ -87,7 +87,7 @@ end
 def t(q)
 	phaset = Matrix[ [1, 0], [0, (Math::E.to_c ** (Complex(0,1) * Math::PI.to_c / 4))] ]
 	@qbit[q] = phaset * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = phaset * @qbit[entanglement_check(q)]
 	end
 end
@@ -95,7 +95,7 @@ end
 def td(q)
 	phasetdagger = Matrix[ [1, 0], [0, (Math::E.to_c ** (Complex(0, -1) * Math::PI.to_c / 4))] ]
 	@qbit[q] = phasetdagger * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = phasetdagger * @qbit[entanglement_check(q)]
 	end
 end
@@ -103,7 +103,7 @@ end
 def v(q)
 	vgate = Matrix[ [Complex(1, 1),Complex(1, -1)],[Complex(1, -1), Complex(1, 1)] ] / 2
 	@qbit[q] = vgate * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = vgate * @qbit[entanglement_check(q)]
 	end
 end
@@ -111,7 +111,7 @@ end
 def vd(q)
 	vgated = Matrix[ [Complex(1, -1),Complex(1, 1)],[Complex(1, 1), Complex(1, -1)] ] / 2
 	@qbit[q] = vgated * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = vgated * @qbit[entanglement_check(q)]
 	end
 end
@@ -119,7 +119,7 @@ end
 def rx(theta, q)
 	rotx = Matrix[ [Math.cos(theta / 2).to_c, Complex(0,-(Math.sin(theta / 2)))],[Complex(0,-(Math.sin(theta / 2))), Math.cos(theta / 2).to_c] ]
 	@qbit[q] = rotx * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = rotx * @qbit[entanglement_check(q)]
 	end
 end
@@ -127,7 +127,7 @@ end
 def ry(theta, q)
 	roty = Matrix[ [Math.cos(theta / 2), -(Math.sin(theta / 2))],[(Math.sin(theta / 2)), Math.cos(theta / 2)] ]
 	@qbit[q] = roty * @qbit[q] 
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = roty * @qbit[entanglement_check(q)]
 	end
 end
@@ -135,7 +135,7 @@ end
 def rz(theta, q)
 	rotz = Matrix[ [Math::E.to_c ** (Complex(0,-(theta / 2))), 0],[0, Math::E.to_c ** (Complex(0, theta / 2))] ]
 	@qbit[q] = rotz * @qbit[q]
-	if entanglement_check(q) != false
+	if entanglement_check(q) != false then
 		@qbit[entanglement_check(q)] = rotz * @qbit[entanglement_check(q)]
 	end
 end
@@ -165,13 +165,13 @@ def cx(c, q)
 	if @qbit[c][1, 0] != 0 then
 		if (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" then
 			@entanglements[:"@qbit[#{q}]"] = "@qbit[#{c}]"
+			@qbit[q] = @qbit[c]
 		else
 			q0 = tensorprodukt[2, 0]/@qbit[c][1, 0]
 			q1 = tensorprodukt[3, 0]/@qbit[c][1, 0]
 			@qbit[q] = Matrix.column_vector( [q0, q1] )
 		end
 	end
-			
 end
 
 def cy(c, q)

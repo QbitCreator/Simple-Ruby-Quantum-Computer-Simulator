@@ -3,6 +3,7 @@ ________________________________________________________________________________
 |The program/gate configuration has to be written in a separate file (any file suffix works), which can later be executed by the main program.|
 |The file can contain any standard ruby commands, as well as the following predetermined functions.					                      |
 |_____________________________________________________________________________________________________________________________________________|
+
 |The predetermined functions for the Quantum-Circuit file are as follows:								                                |
 
 ini_qbits(n) #Initializes a number of n qubits with the probability state of |0> = 1 (Vector: [1, 0]).

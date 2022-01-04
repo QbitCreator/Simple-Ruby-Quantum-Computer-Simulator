@@ -20,7 +20,7 @@ h(q) #Performs the Hadamard matrix 1/sqrt(2)*[[1, 1],[1, -1]] on qubit number q,
 
 s(q) #Performs the S Phase matrix [[1, 0],[0, -i]] on qubit number q, which rotates the quantum state by 90° around the Z-axis.
 
-sd(q) #Performs the reverse fuction of the S Phase matrix [[1, 0],[0, -i]] on qubit number q, which rotates the quantum state by -90° around the Z-axis.
+sd(q) #Performs the reverse function of the S Phase matrix [[1, 0],[0, -i]] on qubit number q, which rotates the quantum state by -90° around the Z-axis.
 
 t(q) #Performs the T Phase matrix [[1, 0],[0, exp(i*PI/4)]] on qubit number q, which rotates the quantum state by 45° around the Z-axis.
 

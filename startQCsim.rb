@@ -20,6 +20,8 @@ def entanglement_check(e)
 		value=@entanglements[:"@qbit[#{e}]"].scan(/\d/).join.to_i
 	elsif @entanglements.invert.include?("@qbit[#{e}]") then
 		value=@entanglements.key("@qbit[#{e}]").to_s.scan(/\d/).join.to_i
+	elsif @entanglements.invert.include?("-@qbit[#{e}]") then
+		value=@entanglements.key("-@qbit[#{e}]").to_s.scan(/\d/).join.to_i
 	else
 		value=false
 	end	
@@ -163,13 +165,17 @@ def cx(c, q)
 		@qbit[q] = Matrix.column_vector( [q0, q1] )
 	end
 	if @qbit[c][1, 0] != 0 then
-		if (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" then
+		if (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" && tensorprodukt[0, 0] ** 2 > tensorprodukt[2, 0] ** 2 then
 			@entanglements[:"@qbit[#{q}]"] = "@qbit[#{c}]"
 			@qbit[q] = @qbit[c]
+		elsif (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" && tensorprodukt[1, 0] ** 2 > tensorprodukt[3, 0] ** 2 then
+			@entanglements[:"@qbit[#{q}]"] = "-@qbit[#{c}]"
+			@qbit[q] = @qbit[c]
+			x(q)
 		else
 			q0 = tensorprodukt[2, 0]/@qbit[c][1, 0]
 			q1 = tensorprodukt[3, 0]/@qbit[c][1, 0]
-			@qbit[q] = Matrix.column_vector( [q0, q1] )
+			@qbit[q] = Matrix.column_vector( [q0.abs(), q1] )
 		end
 	end
 end
@@ -236,6 +242,8 @@ filename = gets().chop
 #RUN
 load filename
 
+puts(@entanglements)
+
 #OUTPUT
 puts()
 for i in 0..@qbit.size-1 do
@@ -245,11 +253,11 @@ for i in 0..@qbit.size-1 do
 		puts("!!! Qubit" + i.to_s + " is entangled to Qubit" + @entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join + " !!!")
 		puts()
 		puts("Vector: ")
-		puts(@qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i] [0, 0].real.round(2).to_s + " + " + @qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][0, 0].imaginary.round(2).to_s + "i")
-		puts(@qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][1, 0].real.round(2).to_s + " + " + @qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][1, 0].imaginary.round(2).to_s + "i")
+		puts(@qbit[i] [0, 0].real.round(2).to_s + " + " + @qbit[i][0, 0].imaginary.round(2).to_s + "i")
+		puts(@qbit[i] [1, 0].real.round(2).to_s + " + " + @qbit[i][1, 0].imaginary.round(2).to_s + "i")
 		puts()
-		p0 = (@qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][0,0].real ** 2).round(2) + (@qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][0, 0].imaginary ** 2).round(2)
-		p1 = (@qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][1,0].real ** 2).round(2) + (@qbit[@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i][1, 0].imaginary ** 2).round(2)
+		p0 = (@qbit[i][0,0].real ** 2).round(2) + (@qbit[i][0, 0].imaginary ** 2).round(2)
+		p1 = (@qbit[i][1,0].real ** 2).round(2) + (@qbit[i][1, 0].imaginary ** 2).round(2)
 		puts("p0: " + p0.to_s)
 		puts("p1: " + p1.to_s)
 		if results.include?(:"#{@entanglements.key("@qbit[#{i}]").to_s.scan(/\d/).join.to_i}") then
@@ -259,15 +267,41 @@ for i in 0..@qbit.size-1 do
 			puts("Measurement: " + results[:"#{i}"].to_s)
 		end
 
+	elsif @entanglements.invert.include?("-@qbit[#{i}]") == true
+		puts("!!! Qubit" + i.to_s + " is entangled to Qubit" + @entanglements.key("-@qbit[#{i}]").to_s.scan(/\d/).join + " !!!")
+		puts()
+		puts("Vector: ")
+		puts(@qbit[i] [0, 0].real.round(2).to_s + " + " + @qbit[i][0, 0].imaginary.round(2).to_s + "i")
+		puts(@qbit[i] [1, 0].real.round(2).to_s + " + " + @qbit[i][1, 0].imaginary.round(2).to_s + "i")
+		puts()
+		p0 = (@qbit[i][0,0].real ** 2).round(2) + (@qbit[i][0, 0].imaginary ** 2).round(2)
+		p1 = (@qbit[i][1,0].real ** 2).round(2) + (@qbit[i][1, 0].imaginary ** 2).round(2)
+		puts("p0: " + p0.to_s)
+		puts("p1: " + p1.to_s)
+		if results.include?(:"#{@entanglements.key("-@qbit[#{i}]").to_s.scan(/\d/).join.to_i}") then
+			if results[:"#{@entanglements.key("-@qbit[#{i}]").to_s.scan(/\d/).join.to_i}"].to_s == "0" then
+				puts("Measurement: " + "1")
+			else 
+				puts("Measurement: " + "0")
+			end
+		else
+			results[:"#{i}"] = random_weighted("0": p0, "1": p1)
+			if results[:"#{i}"].to_s == "0"
+				puts("Measurement: " + "1")
+			else
+				puts("Measurement: " + "0")
+			end
+		end
+
 	elsif	@entanglements.include?(:"@qbit[#{i}]") == true
 		puts("!!! Qubit" + i.to_s + " is entangled to Qubit" + @entanglements[:"@qbit[#{i}]"].scan(/\d/).join + " !!!")
 		puts()
 		puts("Vector: ")
-		puts(@qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i] [0, 0].real.round(2).to_s + " + " + @qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][0, 0].imaginary.round(2).to_s + "i")
-		puts(@qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][1, 0].real.round(2).to_s + " + " + @qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][1, 0].imaginary.round(2).to_s + "i")
+		puts(@qbit[i] [0, 0].real.round(2).to_s + " + " + @qbit[i][0, 0].imaginary.round(2).to_s + "i")
+		puts(@qbit[i] [1, 0].real.round(2).to_s + " + " + @qbit[i][1, 0].imaginary.round(2).to_s + "i")
 		puts()
-		p0 = (@qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][0,0].real ** 2).round(2) + (@qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][0, 0].imaginary ** 2).round(2)
-		p1 = (@qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][1,0].real ** 2).round(2) + (@qbit[@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i][1, 0].imaginary ** 2).round(2)
+		p0 = (@qbit[i][0,0].real ** 2).round(2) + (@qbit[i][0, 0].imaginary ** 2).round(2)
+		p1 = (@qbit[i][1,0].real ** 2).round(2) + (@qbit[i][1, 0].imaginary ** 2).round(2)
 		puts("p0: " + p0.to_s)
 		puts("p1: " + p1.to_s)
 		if results.include?(:"#{@entanglements[:"@qbit[#{i}]"].scan(/\d/).join.to_i}") then
@@ -276,6 +310,7 @@ for i in 0..@qbit.size-1 do
 			results[:"#{i}"] = random_weighted("0": p0, "1": p1)
 			puts("Measurement: " + results[:"#{i}"].to_s)
 		end
+			
 	else
 		puts("Vector: ")
 		puts(@qbit[i][0, 0].real.round(2).to_s + " + " + @qbit[i][0, 0].imaginary.round(2).to_s + "i")

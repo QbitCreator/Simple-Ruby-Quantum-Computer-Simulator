@@ -242,8 +242,6 @@ filename = gets().chop
 #RUN
 load filename
 
-puts(@entanglements)
-
 #OUTPUT
 puts()
 for i in 0..@qbit.size-1 do

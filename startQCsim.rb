@@ -1,4 +1,4 @@
-#Simple quantum computer/gate simulator written in Ruby by Leif-Erik Hallmann, 2021.
+#Simple quantum computer/gate simulator written in Ruby by Leif-Erik Hallmann, 2022.
 #
 #Read readme.txt for commands to write in .qc file and info about the quantum gates.
 
@@ -232,7 +232,7 @@ end
 
 #________________________User Interface__________________________
 
-puts("Quantum circuit simulator by Leif-Erik Hallmann, 2021.")
+puts("Quantum circuit simulator by Leif-Erik Hallmann, 2022.")
 puts()
 
 #INPUT

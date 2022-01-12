@@ -1,4 +1,4 @@
-Simple Quantum Computer Simulator written in Ruby by Leif-Erik Hallmann, 2021.
+Simple Quantum Computer Simulator written in Ruby by Leif-Erik Hallmann, 2022.
 ______________________________________________________________________________________________________________________________________________
 |The program/gate configuration has to be written in a separate file (any file suffix works), which can later be executed by the main program.|
 |The file can contain any standard ruby commands, as well as the following predetermined functions.					      |

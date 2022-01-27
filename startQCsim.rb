@@ -4,8 +4,6 @@
 
 require 'matrix.rb'
 
-
-
 #______________________Qubit Initializer________________________
 
 def ini_qbits(n)

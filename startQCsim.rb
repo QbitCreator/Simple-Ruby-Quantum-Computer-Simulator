@@ -144,17 +144,14 @@ end
 
 
 #______________________Multi Qubit Gates________________________
-
-def cx(c, q)
-	cnot = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0] ]
-
+def multiOperator(c, q, gatematrix)
 	tensorprodukt = Matrix.column_vector( [0.0, 0.0, 0.0, 0.0] )
 	@qbit[c].each_with_index do |vc, ic|
 		@qbit[q].each_with_index do |vq, iq|
 			tensorprodukt[(ic.to_s + iq.to_s).to_i(2), 0] = vc * vq
 		end
 	end
-	tensorprodukt = cnot * tensorprodukt
+	tensorprodukt = gatematrix * tensorprodukt
 	
 	q0 = "empty"
 	q1 = "empty"
@@ -165,10 +162,10 @@ def cx(c, q)
 		@qbit[q] = Matrix.column_vector( [q0, q1] )
 	end
 	if @qbit[c][1, 0] != 0 then
-		if (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" && tensorprodukt[0, 0] ** 2 > tensorprodukt[2, 0] ** 2 then
+		if (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" && (tensorprodukt[0, 0].to_c.real + tensorprodukt[0, 0].to_c.imaginary) ** 2 > (tensorprodukt[2, 0].to_c.real + tensorprodukt[2, 0].to_c.imaginary) ** 2 then
 			@entanglements[:"@qbit[#{q}]"] = "@qbit[#{c}]"
 			@qbit[q] = @qbit[c]
-		elsif (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" && tensorprodukt[1, 0] ** 2 > tensorprodukt[3, 0] ** 2 then
+		elsif (tensorprodukt[2, 0]/@qbit[c][1, 0] != q0 or tensorprodukt[3, 0]/@qbit[c][1, 0] != q1) && q0 != "empty" && (tensorprodukt[1, 0].to_c.real + tensorprodukt[1, 0].to_c.imaginary) ** 2 > (tensorprodukt[3, 0].to_c.real + tensorprodukt[3, 0].to_c.imaginary) ** 2 then
 			@entanglements[:"@qbit[#{q}]"] = "-@qbit[#{c}]"
 			@qbit[q] = @qbit[c]
 			x(q)
@@ -178,24 +175,71 @@ def cx(c, q)
 			@qbit[q] = Matrix.column_vector( [q0.abs(), q1] )
 		end
 	end
+end 
+
+def cx(c, q)
+	cnot = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0] ]
+	multiOperator(c, q, cnot)
 end
 
 def cy(c, q)
-	sd(q)
-	cx(c,q)
-	s(q)
+	ctrly = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, Complex(0, -1)], [0.0, 0.0, Complex(0, 1), 0.0] ]
+	multiOperator(c, q, ctrly)
 end
 
 def cz(c, q)
-	h(q)
-	cx(c,q)
-	h(q)
+	ctrlz = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, -1.0] ]
+	multiOperator(c, q, ctrlz)
 end
 
 def ch(c, q)
-	ry((Math::PI / 4), q)
-	cx(c, q)
-	ry(-(Math::PI / 4), q)
+	ctrlh = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0/Math.sqrt(2), 1.0/Math.sqrt(2)], [0.0, 0.0, 1.0/Math.sqrt(2), -1.0/Math.sqrt(2)] ]
+	multiOperator(c, q, ctrlh)
+end
+
+def cs(c, q)
+	ctrls = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, Complex(0, 1)] ]
+	multiOperator(c, q, ctrls)
+end
+
+def csd(c, q)
+	ctrlsd = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, Complex(0, -1)] ]
+	multiOperator(c, q, ctrlsd)
+end
+
+def ct(c,q)
+	ctrlt = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, (Math::E.to_c ** (Complex(0,1) * Math::PI.to_c / 4))] ]
+	multiOperator(c, q, ctrlt)
+end
+
+def ctd(c,q)
+	ctrltd = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, (Math::E.to_c ** (Complex(0,-1) * Math::PI.to_c / 4))] ]
+	multiOperator(c, q, ctrltd)
+end
+
+def cv(c,q)
+	ctrlv = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, Complex(1, 1)/2, Complex(1, -1)/2], [0.0, 0.0, Complex(1, -1)/2, Complex(1, 1)/2] ]
+	multiOperator(c, q, ctrlv)
+end
+
+def cvd(c,q)
+	ctrlvd = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, Complex(1, -1)/2, Complex(1, 1)/2], [0.0, 0.0, Complex(1, 1)/2, Complex(1, -1)/2] ]
+	multiOperator(c, q, ctrlvd)
+end
+
+def crx(theta, c, q)
+	ctrlrx = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, Math.cos(theta / 2).to_c, Complex(0,-(Math.sin(theta / 2)))], [0.0, 0.0, Complex(0,-(Math.sin(theta / 2))), Math.cos(theta / 2).to_c] ]
+	multiOperator(c, q, ctrlrx)
+end
+
+def cry(theta, c, q)
+	ctrlry = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, Math.cos(theta / 2), -(Math.sin(theta / 2))], [0.0, 0.0, (Math.sin(theta / 2)), Math.cos(theta / 2)] ]
+	multiOperator(c, q, ctrlry)
+end
+
+def crz(theta, c, q)
+	ctrlrz = Matrix[ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, Math::E.to_c ** (Complex(0,-(theta / 2))), 0.0], [0.0, 0.0, 0.0, Math::E.to_c ** (Complex(0, theta / 2))] ]
+	multiOperator(c, q, ctrlrz)
 end
 
 def swp(q0, q1)
@@ -308,7 +352,6 @@ for i in 0..@qbit.size-1 do
 			results[:"#{i}"] = random_weighted("0": p0, "1": p1)
 			puts("Measurement: " + results[:"#{i}"].to_s)
 		end
-			
 	else
 		puts("Vector: ")
 		puts(@qbit[i][0, 0].real.round(2).to_s + " + " + @qbit[i][0, 0].imaginary.round(2).to_s + "i")

@@ -26,19 +26,20 @@ t(q) #Performs the T Phase matrix [[1, 0],[0, exp(i*PI/4)]] on qubit number q, w
 
 td(q) #Performs the reverse function of the T Phase matrix [[1, 0],[0, exp(-i*PI/4)]] on qubit number q, which rotates the quantum state by -45° around the Z-axis.
 
+v(q) #Performs the square root function of the x-gate [[1+i, 1-i],[1-i, 1+i]]/2 on qubit number q. V*V=X 
+
+vd(q) #Performs the negative square root function of the x-gate [[1+i, 1-i],[1-i, 1+i]]/2 on qubit number q. Vd*Vd=X; V*Vd=I
+
 rx(theta, q) #Performs a rotation by angle theta (radians) around the X-axis on the qubit number q.
 
 ry(theta, q) #Performs a rotation by angle theta (radians) around the Y-axis on the qubit number q.
 
 rz(theta, q) #Performs a rotation by angle theta (radians) around the Z-Axis on the qubit number q.
 
+All single qubit gates have a controlled multiqubit-equivalent. Just add a c in front of them like in the cx-gate example below. 
+Controlled discrete angle rotations have the format (theta, c, q) in the brackets.
+
 cx(c, q) #Performs a controlled Pauli-X or controlled-NOT on qubit number q with control qubit number c. If c is 1, q is flipped 180° around X-axis.
-
-cy(c, q) #Performs a controlled Pauli-Y on qubit number q with control qubit number c. If c is 1, q is flipped 180° around Y-axis.
-
-cz(c, q) #Performs a controlled Pauli-Z on qubit number q with control qubit number c. If c is 1, q is flipped 180° around Z-axis.
-
-ch(c, q) #Performs a controlled Hadamard on qubit number q with control qubit number c. If c is 1, q is put to superposition.
 
 swp(q0, q1) #The swap gate swaps the values of qubit number q0 with the values of qubit number q1.
 
